@@ -1,0 +1,260 @@
+{
+  "info": {
+    "name": "Survey App API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "User - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johndoe@example.com\",\n  \"phone\": \"1234567890\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/auth/register",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["auth", "register"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "User - Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"johndoe@example.com\",\n  \"password\": \"password123\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/auth/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["auth", "login"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Survey - Satisfacción del Cliente",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user-id-1\",\n  \"title\": \"Encuesta de Satisfacción del Cliente\",\n  \"questions\": [\n    {\n      \"text\": \"¿Cómo calificarías nuestro servicio?\",\n      \"type\": \"single_choice\",\n      \"options\": [\"Excelente\", \"Bueno\", \"Regular\", \"Malo\"]\n    },\n    {\n      \"text\": \"¿Recomendarías nuestro servicio a otras personas?\",\n      \"type\": \"true_false\",\n      \"options\": [\"Sí\", \"No\"]\n    },\n    {\n      \"text\": \"¿Qué aspectos crees que deberíamos mejorar?\",\n      \"type\": \"open\",\n      \"options\": null\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Survey - Evaluación de Empleados",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user-id-2\",\n  \"title\": \"Evaluación de Desempeño de Empleados\",\n  \"questions\": [\n    {\n      \"text\": \"¿El empleado cumplió con sus objetivos del trimestre?\",\n      \"type\": \"true_false\",\n      \"options\": [\"Sí\", \"No\"]\n    },\n    {\n      \"text\": \"Califica las habilidades técnicas del empleado.\",\n      \"type\": \"single_choice\",\n      \"options\": [\"Excelente\", \"Bueno\", \"Regular\", \"Deficiente\"]\n    },\n    {\n      \"text\": \"Escribe tus comentarios sobre el desempeño del empleado.\",\n      \"type\": \"open\",\n      \"options\": null\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Survey - Preferencias de Producto",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user-id-3\",\n  \"title\": \"Preferencias sobre Productos\",\n  \"questions\": [\n    {\n      \"text\": \"¿Qué categoría de productos prefieres?\",\n      \"type\": \"multiple_choice\",\n      \"options\": [\"Tecnología\", \"Hogar\", \"Ropa\", \"Alimentos\"]\n    },\n    {\n      \"text\": \"¿Qué es más importante para ti en un producto?\",\n      \"type\": \"single_choice\",\n      \"options\": [\"Calidad\", \"Precio\", \"Marca\", \"Disponibilidad\"]\n    },\n    {\n      \"text\": \"Describe el producto ideal para ti.\",\n      \"type\": \"open\",\n      \"options\": null\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Survey - Encuesta Educativa",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user-id-4\",\n  \"title\": \"Encuesta de Satisfacción del Curso\",\n  \"questions\": [\n    {\n      \"text\": \"¿Te gustó la metodología de enseñanza del curso?\",\n      \"type\": \"true_false\",\n      \"options\": [\"Sí\", \"No\"]\n    },\n    {\n      \"text\": \"Califica la claridad del contenido impartido.\",\n      \"type\": \"single_choice\",\n      \"options\": [\"Excelente\", \"Bueno\", \"Regular\", \"Deficiente\"]\n    },\n    {\n      \"text\": \"¿Qué temas consideras que deberían profundizarse?\",\n      \"type\": \"open\",\n      \"options\": null\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Survey - Opinión Pública",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user-id-5\",\n  \"title\": \"Opinión sobre Temas de Actualidad\",\n  \"questions\": [\n    {\n      \"text\": \"¿Estás de acuerdo con la implementación de nuevas políticas ambientales?\",\n      \"type\": \"true_false\",\n      \"options\": [\"Sí\", \"No\"]\n    },\n    {\n      \"text\": \"¿Qué áreas consideras prioritarias para el gobierno?\",\n      \"type\": \"multiple_choice\",\n      \"options\": [\"Salud\", \"Educación\", \"Infraestructura\", \"Seguridad\"]\n    },\n    {\n      \"text\": \"Describe brevemente tus expectativas para el futuro.\",\n      \"type\": \"open\",\n      \"options\": null\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/create",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "create"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Survey - List",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/survey/list",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "list"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Survey - Get by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/survey/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "survey-id"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Survey - Update",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Encuesta Actualizada\",\n  \"questions\": [\n    { \"text\": \"¿Qué mejorarías?\", \"type\": \"open\" }\n  ]\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/survey/update/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "update", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "survey-id"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Survey - Deactivate",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/survey/deactivate/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", "deactivate", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "survey-id"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Survey - Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/survey/:id",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["survey", ":id"],
+          "variable": [
+            {
+              "key": "id",
+              "value": "survey-id"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

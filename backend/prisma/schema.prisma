@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  phone      String
+  password   String
+  responses  Response[]  // Relación inversa hacia Response
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Survey {
+  id         String      @id @default(uuid())
+  title      String
+  questions  Question[]  // Relación inversa hacia Question
+  responses  Response[]  // Relación inversa hacia Response
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Question {
+  id         String       @id @default(uuid())
+  text       String
+  type       QuestionType
+  surveyId   String
+  survey     Survey        @relation(fields: [surveyId], references: [id]) // Relación hacia Survey
+  options    Option[]      // Relación inversa hacia Option
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+}
+
+model Option {
+  id         String       @id @default(uuid())
+  text       String
+  isCorrect  Boolean      @default(false) // Agregar valor predeterminado
+  questionId String
+  question   Question     @relation(fields: [questionId], references: [id]) // Relación hacia Question
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model Response {
+  id         String       @id @default(uuid())
+  surveyId   String
+  userId     String
+  answers    Json
+  survey     Survey       @relation(fields: [surveyId], references: [id]) // Relación hacia Survey
+  user       User         @relation(fields: [userId], references: [id]) // Relación hacia User
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+enum QuestionType {
+  true_false
+  single_choice
+  multiple_choice
+  open
+}
