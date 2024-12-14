@@ -8,7 +8,9 @@ const Home = () => {
     <div className="container d-flex align-items-center justify-content-center min-vh-100">
       <div className="text-center">
         <h1 className="mb-4">Bienvenido a la Plataforma de Encuestas</h1>
+        <h3 className="mb-4">Creado por: Jhon Alexander Perez Ramirez.</h3>
         <p className="mb-4">Por favor selecciona cómo deseas ingresar:</p>
+        
         <div className="d-flex justify-content-center gap-3">
           <button
             className="btn btn-primary btn-lg"
