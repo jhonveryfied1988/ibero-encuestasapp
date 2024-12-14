@@ -7,9 +7,12 @@ export class SurveyController {
 
   @Post('create')
   async createSurvey(
-    @Body() { userId, title, questions }: { userId: string; title: string; questions: any[] },
+    @Body() { userId, title, questions }: { userId?: string; title: string; questions: any[] },
   ) {
-    return this.surveyService.createSurvey(userId, title, questions);
+    const defaultUserId = '122a6530-c88c-4c50-af6c-3ce96a95f3a1'; // Usuario predeterminado
+    const finalUserId = userId || defaultUserId; // Usar el proporcionado o el predeterminado
+
+    return this.surveyService.createSurvey(finalUserId, title, questions);
   }
 
   @Get('list')
@@ -39,4 +42,11 @@ export class SurveyController {
   async deleteSurvey(@Param('id') id: string) {
     return this.surveyService.deleteSurvey(id);
   }
+
+  @Get('results/:id')
+  async getSurveyResults(@Param('id') surveyId: string) {
+    return this.surveyService.getSurveyResults(surveyId);
+  }
+
+
 }

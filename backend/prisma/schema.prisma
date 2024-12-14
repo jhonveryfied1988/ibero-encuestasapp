@@ -8,56 +8,69 @@ datasource db {
 }
 
 model User {
-  id         String      @id @default(uuid())
-  name       String
-  email      String      @unique
-  phone      String
-  password   String
-  responses  Response[]  // Relación inversa hacia Response
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  phone     String
+  password  String
+  responses Response[] // Relación inversa hacia Response
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  surveys   Survey[]     // Relación inversa con Survey
 }
 
 model Survey {
-  id         String      @id @default(uuid())
-  title      String
-  isActive   Boolean     @default(true) // Campo definido como booleano
-  questions  Question[]  // Relación inversa hacia Question
-  responses  Response[]  // Relación inversa hacia Response
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        String     @id @default(uuid())
+  title     String
+  isActive  Boolean    @default(true) // Campo definido como booleano
+  userId    String      // FK que referencia al usuario creador de la encuesta
+  user      User        @relation(fields: [userId], references: [id]) // Relación con User
+  questions Question[] // Relación inversa hacia Question
+  responses Response[] // Relación inversa hacia Response
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Question {
-  id         String       @id @default(uuid())
-  text       String
-  type       QuestionType
-  surveyId   String
-  survey     Survey        @relation(fields: [surveyId], references: [id]) // Relación hacia Survey
-  options    Option[]      // Relación inversa hacia Option
-  createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  id        String       @id @default(uuid())
+  text      String
+  type      QuestionType
+  surveyId  String
+  survey    Survey       @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  options   Option[] // Relación inversa hacia Option
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  Answer    Answer[]
 }
 
 model Option {
-  id         String       @id @default(uuid())
+  id         String   @id @default(uuid())
   text       String
-  isCorrect  Boolean      @default(false) // Agregar valor predeterminado
+  isCorrect  Boolean  @default(false) // Agregar valor predeterminado
   questionId String
-  question   Question     @relation(fields: [questionId], references: [id]) // Relación hacia Question
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  question   Question @relation(fields: [questionId], references: [id]) // Relación hacia Question
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Response {
-  id         String       @id @default(uuid())
-  surveyId   String
-  userId     String
-  answers    Json
-  survey     Survey       @relation(fields: [surveyId], references: [id]) // Relación hacia Survey
-  user       User         @relation(fields: [userId], references: [id]) // Relación hacia User
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  id        String   @id @default(uuid())
+  surveyId  String
+  userId    String
+  answers   Answer[] // Relación con Answer
+  survey    Survey   @relation(fields: [surveyId], references: [id]) // Relación hacia Survey
+  user      User     @relation(fields: [userId], references: [id]) // Relación hacia User
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  response   Response @relation(fields: [responseId], references: [id])
+  responseId String
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String
+  value      String
 }
 
 enum QuestionType {

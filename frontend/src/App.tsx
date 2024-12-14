@@ -9,15 +9,15 @@ function App() {
   return (
     <Wrapper>
       <Routes>
-        {/* Ruta principal */}
-        <Route path="/" element={<Home />} />
+          {/* Ruta principal */}
+          <Route path="/" element={<Home />} />
 
-        {/* Rutas base para Admin y User */}
-        <Route path="/admin/*" element={<Admin />} />
-        <Route path="/user/*" element={<User />} />
+          {/* Rutas base para Admin y User */}
+          <Route path="/admin/*" element={<Admin />} />
+          <Route path="/user/*" element={<User />} />
 
-        {/* Ruta por defecto para errores */}
-        <Route path="*" element={<Navigate to="/" />} />
+          {/* Ruta por defecto */}
+          <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Wrapper>
   );

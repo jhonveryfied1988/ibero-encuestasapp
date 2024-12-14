@@ -1,131 +1,131 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
-interface Survey {
-  id: string;
-  title: string;
-  createdAt: string;
-  isActive: boolean;
-}
-
 const Surveys = () => {
-  const [surveys, setSurveys] = useState<Survey[]>([]);
-  const [selectedSurvey, setSelectedSurvey] = useState<Survey | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [editedTitle, setEditedTitle] = useState('');
+  const [surveys, setSurveys] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
-  // Fetch surveys from the backend
-  const fetchSurveys = async () => {
-    try {
-      const response = await api.get<Survey[]>('/survey/list');
-      setSurveys(response.data);
-    } catch (error) {
-      console.error('Error al obtener las encuestas:', error);
-    }
-  };
-
+  // Cargar las encuestas desde el backend
   useEffect(() => {
+    const fetchSurveys = async () => {
+      try {
+        const response = await api.get('/survey/list');
+        setSurveys(response.data);
+      } catch (err) {
+        console.error('Error fetching surveys:', err);
+        setError('No se pudieron cargar las encuestas. Inténtalo más tarde.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchSurveys();
   }, []);
 
-  // Open the edit modal
-  const handleEdit = (survey: Survey) => {
-    setSelectedSurvey(survey);
-    setEditedTitle(survey.title);
-    setShowModal(true);
+  const handleEdit = (id: string) => {
+    navigate(`/admin/edit-survey/${id}`);
   };
 
-  // Update the survey title
-  const handleUpdate = async () => {
-    if (!selectedSurvey) return;
-
-    try {
-      await api.put(`/survey/update/${selectedSurvey.id}`, { title: editedTitle });
-      setShowModal(false);
-      fetchSurveys();
-    } catch (error) {
-      console.error('Error al actualizar la encuesta:', error);
-    }
-  };
-
-  // Delete a survey
   const handleDelete = async (id: string) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar esta encuesta?')) return;
-
-    try {
-      await api.delete(`/survey/${id}`);
-      fetchSurveys();
-    } catch (error) {
-      console.error('Error al eliminar la encuesta:', error);
+    if (window.confirm('¿Estás seguro de que deseas eliminar esta encuesta?')) {
+      try {
+        await api.delete(`/survey/${id}`);
+        setSurveys((prev) => prev.filter((survey) => survey.id !== id));
+        alert('Encuesta eliminada correctamente.');
+      } catch (err) {
+        console.error('Error deleting survey:', err);
+        alert('No se pudo eliminar la encuesta. Inténtalo de nuevo.');
+      }
     }
+  };
+
+  const handleResults = (id: string) => {
+    navigate(`/admin/surveys/results/${id}`);
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="mb-6 text-2xl font-bold">Gestión de Encuestas</h1>
-      <table className="min-w-full bg-white border rounded">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">Título</th>
-            <th className="px-4 py-2 border">Fecha de Creación</th>
-            <th className="px-4 py-2 border">Estado</th>
-            <th className="px-4 py-2 border">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {surveys.map((survey) => (
-            <tr key={survey.id}>
-              <td className="px-4 py-2 border">{survey.title}</td>
-              <td className="px-4 py-2 border">{new Date(survey.createdAt).toLocaleDateString()}</td>
-              <td className="px-4 py-2 border">{survey.isActive ? 'Activa' : 'Inactiva'}</td>
-              <td className="px-4 py-2 border">
-                <button
-                  onClick={() => handleEdit(survey)}
-                  className="px-2 py-1 mr-2 text-white bg-blue-500 rounded"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => handleDelete(survey.id)}
-                  className="px-2 py-1 text-white bg-red-500 rounded"
-                >
-                  Eliminar
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="container my-5">
+      <h1 className="text-center mb-4">Lista de Encuestas</h1>
 
-      {/* Modal for Editing */}
-      {showModal && selectedSurvey && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="p-6 bg-white rounded shadow-md">
-            <h2 className="mb-4 text-lg font-bold">Editar Encuesta</h2>
-            <label className="block mb-2 text-sm font-medium">Título</label>
-            <input
-              type="text"
-              value={editedTitle}
-              onChange={(e) => setEditedTitle(e.target.value)}
-              className="w-full px-3 py-2 mb-4 border rounded"
-            />
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 text-white bg-gray-500 rounded"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleUpdate}
-                className="px-4 py-2 text-white bg-blue-500 rounded"
-              >
-                Guardar
-              </button>
-            </div>
+      {/* Mensaje de Error */}
+      {error && <div className="alert alert-danger text-center">{error}</div>}
+
+      {/* Loading */}
+      {loading ? (
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Cargando...</span>
           </div>
         </div>
+      ) : surveys.length === 0 ? (
+        <div className="alert alert-info text-center">
+          No hay encuestas disponibles en este momento.
+        </div>
+      ) : (
+        <table className="table table-hover table-bordered">
+          <thead className="thead-dark">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Título</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {surveys.map((survey, index) => (
+              <tr key={survey.id}>
+                <th scope="row">{index + 1}</th>
+                <td>{survey.title}</td>
+                <td className="text-center">
+                  {survey.isActive ? (
+                    <span className="text-success">✔ Activa</span>
+                  ) : (
+                    <span className="text-danger">Inactiva</span>
+                  )}
+                </td>
+                <td>
+                  <div className="btn-group" role="group">
+                    {/* Botón Ver Resultados */}
+                    <button
+                      className="btn btn-sm btn-primary"
+                      onClick={() => handleResults(survey.id)}
+                    >
+                      Resultados
+                    </button>
+                    {/* Botón Editar */}
+                    <button
+                      className="btn btn-sm btn-info"
+                      onClick={() => handleEdit(survey.id)}
+                    >
+                      Editar
+                    </button>
+                    {/* Botón Eliminar */}
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDelete(survey.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
+
+      {/* Botón para Crear Nueva Encuesta */}
+      <div className="text-center mt-4">
+        <button
+          onClick={() => navigate('/admin/create-survey')}
+          className="btn btn-success"
+        >
+          Crear Nueva Encuesta
+        </button>
+      </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import SurveyList from './SurveyList';
 import FillSurvey from './FillSurvey';
 import ViewSurvey from './ViewSurvey';
+import Confirmation from './Confirmation';
 
 const User = () => {
   return (
@@ -18,8 +19,9 @@ const User = () => {
 
         {/* Subrutas para User */}
         <Route path="surveys" element={<SurveyList />} />
-        <Route path="fill-survey" element={<FillSurvey />} />
+        <Route path="fill-survey/:id" element={<FillSurvey />} /> 
         <Route path="view-survey/:id" element={<ViewSurvey />} />
+        <Route path="confirmation" element={<Confirmation />} />
       </Routes>
     </div>
   );

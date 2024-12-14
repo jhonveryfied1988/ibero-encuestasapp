@@ -1,7 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { UserService } from './user.service';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -11,4 +11,12 @@ export class UserController {
   ) {
     return this.userService.createUser(name, email, phone, password);
   }
+
+  // Subruta: /users/list
+  @Get('list')
+  async getUsersList() {
+    return this.userService.list();
+  }
+
+
 }

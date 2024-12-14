@@ -6,7 +6,6 @@ const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone: '',
     password: '',
     confirmPassword: '',
   });
@@ -33,7 +32,6 @@ const Register = () => {
       await api.post('/auth/register', {
         name: formData.name,
         email: formData.email,
-        phone: formData.phone, // Incluye el campo phone
         password: formData.password,
       });
       setSuccess('Registro exitoso. Redirigiendo al inicio de sesión...');
@@ -79,21 +77,6 @@ const Register = () => {
                 className="form-control"
                 placeholder="ejemplo@correo.com"
                 value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-
-            {/* Campo Teléfono */}
-            <div className="form-group">
-              <label htmlFor="phone">Teléfono</label>
-              <input
-                type="text"
-                id="phone"
-                name="phone"
-                className="form-control"
-                placeholder="Ingresa tu número de teléfono"
-                value={formData.phone}
                 onChange={handleInputChange}
                 required
               />

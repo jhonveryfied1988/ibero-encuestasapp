@@ -6,7 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ResponseModule } from './response/response.module';
 
 @Module({
-  imports: [UserModule, SurveyModule, AuthModule, ResponseModule],
+  imports: [UserModule, SurveyModule, AuthModule, ResponseModule, ],
   providers: [PrismaService],
 })
 export class AppModule {}

@@ -9,29 +9,33 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="d-flex flex-column min-vh-100 bg-light">
       {/* Header */}
-      <header className="w-full bg-dark py-3">
-        <div className="container mx-auto flex justify-between items-center px-4">
+      <header className="bg-dark py-3">
+        <div className="container d-flex justify-content-between align-items-center">
           <h1 className="text-white m-0">Plataforma de Encuestas</h1>
-          <button
-            onClick={() => navigate('/')}
-            className="btn btn-danger"
-          >
-            Volver al Home
-          </button>
         </div>
       </header>
 
-      {/* Contenedor Principal con Ancho Fijo */}
-      <div className="flex-grow flex items-center justify-center">
-        <main className="w-full max-w-[1000px] text-center bg-white shadow-lg p-6 rounded-lg">
+      {/* Contenedor Principal Centrado */}
+      <div className="flex-grow-1 d-flex justify-content-center align-items-center position-relative">
+        {/* Botón Volver al Inicio */}
+        <button
+          onClick={() => navigate('/')}
+          className="btn btn-primary position-absolute"
+          style={{ top: '10px', right: '10px' }}
+        >
+          Volver al Inicio
+        </button>
+
+        {/* Contenido Principal */}
+        <main className="bg-white shadow p-4 rounded w-100" style={{ maxWidth: '1000px' }}>
           {children}
         </main>
       </div>
 
       {/* Footer */}
-      <footer className="w-full bg-dark py-3 text-white text-center">
+      <footer className="bg-dark py-3 text-center text-white">
         <p className="mb-0">© 2024 Plataforma de Encuestas. Todos los derechos reservados.</p>
       </footer>
     </div>
