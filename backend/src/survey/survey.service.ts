@@ -209,6 +209,7 @@ export class SurveyService {
     const survey = await this.prisma.survey.findUnique({
       where: { id },
       include: {
+        user: true, // Incluye los datos del usuario
         questions: {
           include: {
             options: true,
@@ -232,8 +233,19 @@ export class SurveyService {
     if (!survey) {
       throw new NotFoundException('Encuesta no encontrada');
     }
-  
-    return survey;
+
+      // Mapear los resultados con el texto de las preguntas
+  return {
+      title: survey.title,
+      responses: survey.responses.map((response) => ({
+        userId: response.userId,
+        userEmail: response.user.email, // Añade el email del usuario
+        answers: response.answers.map((answer) => ({
+          questionText: answer.question.text, // Incluye el texto de la pregunta
+          value: answer.value,
+        })),
+      })),
+    };
   }
   
 

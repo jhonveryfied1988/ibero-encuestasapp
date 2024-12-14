@@ -59,27 +59,66 @@ const FillSurvey = () => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
-  // Enviar respuestas
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedUserId) {
-      alert('Por favor, selecciona un usuario para responder la encuesta.');
+  
+    // Validar y formatear las respuestas
+    let formattedAnswers;
+    try {
+      formattedAnswers = Object.entries(answers).map(([questionId, value]) => {
+        if (!value) {
+          console.error(`Falta valor para la pregunta con ID: ${questionId}`);
+          throw new Error(`Valor faltante en la pregunta con ID: ${questionId}`);
+        }
+  
+        const formattedValue = Array.isArray(value) ? value.join(', ') : value.toString();
+  
+        return { questionId, value: formattedValue };
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert('An unknown error occurred.');
+      }
       return;
     }
-
+  
+    // Validar que userId y surveyId existan
+    const userId = selectedUserId;
+    const surveyId = survey?.id;
+  
+    if (!userId) {
+      console.error('ID de usuario no proporcionado.');
+      return alert('Por favor, selecciona un usuario para responder la encuesta.');
+    }
+  
+    if (!surveyId) {
+      console.error('ID de encuesta no proporcionado.');
+      return alert('La encuesta no se pudo identificar. Intenta nuevamente.');
+    }
+  
+    // Construir los datos
+    const responseData = {
+      userId,
+      surveyId,
+      answers: formattedAnswers,
+    };
+  
+    console.log('Datos enviados al backend:', responseData);
+  
+    // Enviar datos al backend
     try {
-      await api.post('/response/submit', {
-        surveyId: id,
-        userId: selectedUserId,
-        answers: Object.entries(answers).map(([questionId, value]) => ({
-          questionId,
-          value,
-        })),
-      });
-      navigate('/user/confirmation');
-    } catch (err) {
-      console.error('Error submitting survey:', err);
-      setError('No se pudo enviar la encuesta. Inténtalo más tarde.');
+      const response = await api.post('/response/submit', responseData);
+      console.log('Respuestas registradas:', response.data);
+      alert('¡Respuestas enviadas correctamente!');
+    } catch (error) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } }; message?: string }).response?.data?.message || 
+        (error as { message?: string }).message || 
+        'Error desconocido';
+      console.error('Error al enviar las respuestas:', errorMessage);
+      alert(`Error al enviar las respuestas: ${errorMessage}`);
     }
   };
 

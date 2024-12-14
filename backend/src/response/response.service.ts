@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from 'bcrypt';
 
@@ -16,14 +16,55 @@ export class ResponseService {
    * @param surveyId ID de la encuesta
    * @param answers Respuestas proporcionadas por el usuario
    */
-  async submitResponse(userId: string, surveyId: string, answers: any) {
-    return await this.prisma.response.create({
-      data: {
-        userId,
-        surveyId,
-        answers, // Guardar las respuestas como JSON
-      },
+  async submitResponse(userId: string, surveyId: string, answers: any[]) {
+    console.log('Datos recibidos:', { userId, surveyId, answers });
+
+    // Validar que el usuario y la encuesta existan
+    const userExists = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!userExists) {
+      throw new BadRequestException('Usuario no encontrado');
+    }
+
+    const surveyExists = await this.prisma.survey.findUnique({ where: { id: surveyId } });
+    if (!surveyExists) {
+      throw new BadRequestException('Encuesta no encontrada');
+    }
+
+    // Validar y mapear las respuestas
+    const mappedAnswers = answers.map((answer) => {
+      if (typeof answer.value !== 'string' || !answer.value.trim()) {
+        throw new BadRequestException(
+          `Valor de la respuesta no válido para la pregunta ${answer.questionId}. Se esperaba una cadena de texto.`,
+        );
+      }
+
+      return {
+        questionId: answer.questionId,
+        value: answer.value.trim(), // Asegurar que sea una cadena válida
+      };
     });
+
+    console.log('Respuestas mapeadas:', mappedAnswers);
+
+    // Crear la respuesta
+    try {
+      const response = await this.prisma.response.create({
+        data: {
+          surveyId,
+          userId,
+          answers: {
+            create: mappedAnswers,
+          },
+        },
+        include: { answers: true },
+      });
+
+      console.log('Respuesta creada exitosamente:', response);
+      return response;
+    } catch (error) {
+      console.error('Error al crear la respuesta:', error);
+      throw new BadRequestException('Error al registrar la respuesta.');
+    }
   }
 
   /**
