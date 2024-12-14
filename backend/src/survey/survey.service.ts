@@ -5,7 +5,12 @@ import { PrismaService } from '../prisma.service';
 export class SurveyService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Crear una nueva encuesta con preguntas y opciones
+  /**
+   * Crear una nueva encuesta con preguntas y opciones.
+   * @param userId ID del usuario asociado
+   * @param title Título de la encuesta
+   * @param questions Preguntas de la encuesta
+   */
   async createSurvey(userId: string, title: string, questions: any[]) {
     // Verifica si el usuario existe
     const userExists = await this.prisma.user.findUnique({
@@ -16,11 +21,10 @@ export class SurveyService {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    // Crea la encuesta asociada al usuario
-    return this.prisma.survey.create({
+    // Crea la encuesta y sus preguntas
+    return await this.prisma.survey.create({
       data: {
         title,
-        user: { connect: { id: userId } },
         questions: {
           create: questions.map((question) => ({
             text: question.text,
@@ -39,15 +43,19 @@ export class SurveyService {
     });
   }
 
-  // Listar todas las encuestas activas con sus preguntas y opciones
+  /**
+   * Listar todas las encuestas activas con sus preguntas y opciones.
+   */
   async listSurveys() {
-    return this.prisma.survey.findMany({
-      where: { isActive: true },
+    return await this.prisma.survey.findMany({
       include: { questions: { include: { options: true } } },
     });
   }
 
-  // Obtener una encuesta específica por su ID
+  /**
+   * Obtener una encuesta específica por su ID.
+   * @param id ID de la encuesta
+   */
   async getSurveyById(id: string) {
     const survey = await this.prisma.survey.findUnique({
       where: { id },
@@ -61,14 +69,20 @@ export class SurveyService {
     return survey;
   }
 
-  // Actualizar una encuesta con preguntas y opciones
+  /**
+   * Actualizar una encuesta con preguntas y opciones.
+   * @param id ID de la encuesta
+   * @param title Nuevo título de la encuesta
+   * @param questions Nuevas preguntas para la encuesta
+   */
   async updateSurvey(id: string, title: string, questions: any[]) {
-    return this.prisma.survey.update({
+    // Actualizar el título y las preguntas de la encuesta
+    return await this.prisma.survey.update({
       where: { id },
       data: {
         title,
         questions: {
-          deleteMany: {}, // Elimina todas las preguntas existentes
+          deleteMany: {}, // Limpia las preguntas existentes
           create: questions.map((question) => ({
             text: question.text,
             type: question.type,
@@ -86,17 +100,39 @@ export class SurveyService {
     });
   }
 
-  // Inactivar una encuesta
+  /**
+   * Inactivar una encuesta.
+   * @param id ID de la encuesta
+   */
   async deactivateSurvey(id: string) {
-    return this.prisma.survey.update({
+    const surveyExists = await this.prisma.survey.findUnique({
+      where: { id },
+    });
+
+    if (!surveyExists) {
+      throw new NotFoundException('Encuesta no encontrada');
+    }
+
+    return await this.prisma.survey.update({
       where: { id },
       data: { isActive: false },
     });
   }
 
-  // Eliminar una encuesta permanentemente
+  /**
+   * Eliminar una encuesta permanentemente.
+   * @param id ID de la encuesta
+   */
   async deleteSurvey(id: string) {
-    return this.prisma.survey.delete({
+    const surveyExists = await this.prisma.survey.findUnique({
+      where: { id },
+    });
+
+    if (!surveyExists) {
+      throw new NotFoundException('Encuesta no encontrada');
+    }
+
+    return await this.prisma.survey.delete({
       where: { id },
     });
   }

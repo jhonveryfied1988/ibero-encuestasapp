@@ -21,6 +21,7 @@ model User {
 model Survey {
   id         String      @id @default(uuid())
   title      String
+  isActive   Boolean     @default(true) // Campo definido como booleano
   questions  Question[]  // Relación inversa hacia Question
   responses  Response[]  // Relación inversa hacia Response
   createdAt  DateTime    @default(now())
