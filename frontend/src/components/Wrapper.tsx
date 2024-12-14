@@ -13,7 +13,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
       {/* Header */}
       <header className="bg-dark py-3">
         <div className="container d-flex justify-content-between align-items-center">
-          <h1 className="text-white m-0">Plataforma de Encuestas</h1>
+          <h1 className="text-white m-0">Plataforma de Encuestas - Analisis y diseño de sistemas - Act 3.</h1>
         </div>
       </header>
 
@@ -36,7 +36,7 @@ const Wrapper: React.FC<WrapperProps> = ({ children }) => {
 
       {/* Footer */}
       <footer className="bg-dark py-3 text-center text-white">
-        <p className="mb-0">© 2024 Plataforma de Encuestas. Todos los derechos reservados.</p>
+        <p className="mb-0">© 2024 Plataforma de Encuestas Jhon Alexander Perez Ramirez. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

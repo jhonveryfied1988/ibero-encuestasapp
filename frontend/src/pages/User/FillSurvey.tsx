@@ -112,6 +112,7 @@ const FillSurvey = () => {
       const response = await api.post('/response/submit', responseData);
       console.log('Respuestas registradas:', response.data);
       alert('¡Respuestas enviadas correctamente!');
+      navigate('/user/surveys'); // Redirigir al listado de encuestas
     } catch (error) {
       const errorMessage =
         (error as { response?: { data?: { message?: string } }; message?: string }).response?.data?.message || 
